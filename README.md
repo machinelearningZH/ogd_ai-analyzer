@@ -1,6 +1,7 @@
 # 🦄 OGD Auto AI Analyzer
 **Almost automatically analyze the quality of a DCAT metadata catalog. With a little help from ✨ AI...**
 
+![GitHub License](https://img.shields.io/github/license/machinelearningzh/ogd_ai-analyzer)
 [![PyPI - Python](https://img.shields.io/badge/python-v3.9+-blue.svg)](https://github.com/machinelearningZH/ogd_ai-analyzer)
 [![GitHub Stars](https://img.shields.io/github/stars/machinelearningZH/ogd_ai-analyzer.svg)](https://github.com/machinelearningZH/ogd_ai-analyzer/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/machinelearningZH/ogd_ai-analyzer.svg)](https://github.com/machinelearningZH/ogd_ai-analyzer/issues)
