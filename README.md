@@ -84,6 +84,14 @@ With the second notebook you get an **in depth analysis of each datasets title a
 - what the spacial aggregation is («Räumlicher Bezug»), 
 - and how the data can be linked to other data («Verknüpfungsmöglichkeiten»). 
 
+You also get a score for each dataset from 1 (least informative) to 5 (most informative). The scoring is as follows:
+
+- 1 point - No information about this criterion.
+- 2 points - Few information, much is missing.
+- 3 points - Average information, some information is available, some is missing.
+- 4 points - Good information, most information is available.
+- 5 points - Excellent information, everything is very clear, complete, and detailed.
+
 ## Background: Why check metadata?
 Metadata is essential for data users. Only with an understanding of context, methodology, content, and quality can they fully utilize the data. Creating good metadata requires time and effort. Unfortunately, not all metadata meets sufficient quality standards. We observe issues both in our catalog and others, such as [opendata.swiss](https://opendata.swiss/de).
 
