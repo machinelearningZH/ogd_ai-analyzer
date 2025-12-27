@@ -72,8 +72,10 @@ The two notebooks produce the following outputs:
 - another **Excel file with a qualitative assessment of the title and description of each dataset** created by an LLM
 
 > [!Important]
-> By using the LLM-based analysis code, **you send data to a third-party provider** via [OpenRouter](https://openrouter.ai), which routes requests to various LLM providers. **Only use non-sensitive data.** 
-> **LLMs make errors.** They regularly hallucinate, make things up, and get things wrong in subtle, non-obvious ways that may be hard to detect. This app **provides suggestions only** and **yields a draft analysis that you must always double-check.**
+> By using the LLM-based analysis code, **you send data to a third-party provider** via [OpenRouter](https://openrouter.ai), which routes requests to various LLM providers. **Only use non-sensitive data.**
+
+> [!Important] 
+> **LLMs make errors.** This app **provides suggestions only** and **yields a draft analysis that you should always double-check.**
 
 ## What exactly do we check?
 
