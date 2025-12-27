@@ -72,7 +72,7 @@ The two notebooks produce the following outputs:
 - another **Excel file with a qualitative assessment of the title and description of each dataset** created by an LLM
 
 > [!Important]
-> By using the LLM-based analysis code, **you send data to a third-party provider** via [OpenRouter](https://openrouter.ai), which routes requests to various LLM providers. **Only use non-sensitive data.**
+> Use of the LLM-based analysis code results in **data being sent to third-party model providers through [OpenRouter](https://openrouter.ai)**, which brokers requests to multiple LLM services. **Do not submit sensitive or confidential data.**
 
 > [!Important] 
 > **LLMs make errors.** This app **provides suggestions only** and **yields a draft analysis that you should always double-check.**
