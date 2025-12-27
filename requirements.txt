@@ -1,9 +1,0 @@
-pandas
-matplotlib
-seaborn
-requests
-tabulate
-tqdm
-python-dotenv
-openpyxl
-openai
