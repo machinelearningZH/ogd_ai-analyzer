@@ -37,17 +37,21 @@ source .venv/bin/activate
 uv sync
 ```
 
-- You need to **create an [OpenAI API key](https://platform.openai.com) to use the LLM-based assessments**. Create an `.env` file and input your API keys like so:
+- You need to **create an [OpenRouter API key](https://openrouter.ai/keys) to use the LLM-based assessments**. Create an `.env` file and input your API key like so:
 
 ```
-    OPENAI_API_KEY=sk-...
+    OPENROUTER_API_KEY=sk-or-v1-...
 ```
 
 - Open the notebooks in your favorite IDE and run the code.
 - Check the results (in folder `_results`) and fix issues in your metadata.
 
 > [!Note]
-> The notebooks are set up as [Quarto](https://quarto.org/) files. You don't need to use Quarto. You can simply run the notebooks as is and look at the results. However, we encourage you to try it out with Quarto. The results will be much more shareable, e.g., to a non-technical audience that doesn't want or need to see code. Simply [install Quarto](https://quarto.org/docs/get-started/), add [an extension to your IDE](https://quarto.org/docs/tools/vscode.html), and convert the notebooks to HTML or PDF files.
+> The notebooks are set up as [Quarto](https://quarto.org/) files. You don't need to use Quarto. You can simply run the notebooks as is and look at the results. However, we encourage you to try it out with Quarto. The results will be much more shareable, e.g., to a non-technical audience that doesn't want or need to see code. Simply [install Quarto](https://quarto.org/docs/get-started/), add [an extension to your IDE](https://quarto.org/docs/tools/vscode.html), and convert the notebooks to HTML or PDF files. You can also render the EDA notebook directly from the command line:
+
+```bash
+quarto render 01_mdv_quality_checks.ipynb
+```
 
 ## What does the code do?
 
@@ -67,7 +71,7 @@ The two notebooks produce the following outputs:
 - another **Excel file with a qualitative assessment of the title and description of each dataset** created by an LLM
 
 > [!Important]
-> At the risk of stating the obvious: By using the code parts for the LLM-based analysis **you send data to a third-party provider** namely [OpenAI](https://platform.openai.com/docs/overview). **Therefore only use non-sensitive data.** Again, stating the obvious: **LLMs make errors.** They regularly hallucinate, make things up, and get things wrong. They often do so in subtle, non-obvious ways, that may be hard to detect. This app is **meant to be used as an assistive system that makes suggestions.** It **only yields a draft of an analyis, that you always should double-check.**
+> At the risk of stating the obvious: By using the code parts for the LLM-based analysis **you send data to a third-party provider** via [OpenRouter](https://openrouter.ai), which routes requests to various LLM providers. **Therefore only use non-sensitive data.** Again, stating the obvious: **LLMs make errors.** They regularly hallucinate, make things up, and get things wrong. They often do so in subtle, non-obvious ways, that may be hard to detect. This app is **meant to be used as an assistive system that makes suggestions.** It **only yields a draft of an analysis, that you always should double-check.**
 
 ## What exactly do we check?
 

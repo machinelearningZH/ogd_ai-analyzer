@@ -1,0 +1,7 @@
+# Configuration for LLM API calls
+
+# OpenRouter Model Configuration
+llm_model_id: "google/gemini-3-flash-preview"
+
+# Token Configuration
+max_tokens: 8192

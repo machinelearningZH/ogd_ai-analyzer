@@ -1,24 +1,37 @@
 import pandas as pd
 import os
 import re
+import yaml
 from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-openai_client = OpenAI()
-OPENAI_SYSTEM_MESSAGE = """"You are a helpful assistant."""
+# Load configuration from YAML
+with open(os.path.join(os.path.dirname(__file__), "config.yaml"), "r") as f:
+    config = yaml.safe_load(f)
+
+LLM_MODEL_ID = config["llm_model_id"]
+MAX_TOKENS = config["max_tokens"]
+
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+openai_client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=OPENROUTER_API_KEY,
+)
 
 
-def call_openai(prompt, modelId="gpt-4o", temperature=0.5, max_tokens=4096):
+def call_openrouter(prompt, modelId=None, max_tokens=None):
+    # Use config defaults if not specified
+    if modelId is None:
+        modelId = LLM_MODEL_ID
+    if max_tokens is None:
+        max_tokens = MAX_TOKENS
     try:
         completion = openai_client.chat.completions.create(
             model=modelId,
-            temperature=temperature,
-            max_tokens=max_tokens,
+            max_completion_tokens=max_tokens,
             messages=[
-                {"role": "system", "content": OPENAI_SYSTEM_MESSAGE},
                 {"role": "user", "content": prompt},
             ],
         )
@@ -29,18 +42,38 @@ def call_openai(prompt, modelId="gpt-4o", temperature=0.5, max_tokens=4096):
         return None
 
 
-PROMPT_ANOMALIES = """Du bist Experte für Datenqualität und sollst einen Datenkatalog überprüfen. Du erhältst eine kommagetrennte Liste von {feature} aller Datensätze im Katalog. Du sollst die Beschreibungen auf Anomalien prüfen. Hier ist die kommagetrennte Liste von {feature} der Datensätze:
+PROMPT_ANOMALIES = """
+Du bist Datenqualitätsprüfer für einen Datenkatalog eines Schweizer Statistikamts. Analysiere die {feature}-Werte auf Anomalien und Auffälligkeiten.
 
-<datensatz-{feature}>
+Daten:
+<datensatz_{feature}>
 {data}
-</datensatz-{feature}>
+</datensatz_{feature}>
 
-Prüfe nun, ob es Anomalien oder sonstige Auffälligkeiten in den {feature} gibt. Bitte liste alle Anomalien auf, die du findest, zitiere passende Beispiele und kommentiere kurz, warum diese ein Problem sind."""
+Aufgabe:
+1. Identifiziere alle Anomalien in den {feature}-Werten
+2. Dokumentiere jede Anomalie mit 1–3 konkreten Beispielen (exakte Originalwerte)
+3. Bei Rechtschreib-/Tippfehlern oder inkonsistenten Schreibweisen: alle Beispiele angeben
+4. Falls keine Anomalien: schreibe nur "Keine Anomalien erkennbar."
+
+Typische Anomalie-Kategorien (nur nennen, wenn zutreffend):
+- Rechtschreib-, Grammatik- oder Tippfehler
+- Inkonsistente Schreibweisen oder Terminologie
+- Unklare, mehrdeutige oder unvollständige Formulierungen
+- Uneinheitliche Sprache oder Einheiten
+- Verdächtige Muster (Template-Reste, Lorem ipsum, Copy-Paste-Fehler)
+
+Output-Format (Markdown):
+### <Anomalie-Kategorie>
+- Beispiele: "<wert1>", "<wert2>", "<wert3>"
+
+Schreibe auf Deutsch. Beginne direkt mit der Analyse, ohne Einleitung oder Schlussbemerkung.
+""".strip()
 
 
 def check_text_properties(feature, data):
     """Check the text properties of the titles and descriptions of the datasets globally. Each will be provided to the LLM as a comma-separated list. The analysis will be done in one go, not per dataset."""
-    return call_openai(PROMPT_ANOMALIES.format(feature=feature, data=data))
+    return call_openrouter(PROMPT_ANOMALIES.format(feature=feature, data=data))
 
 
 SYSTEM_MESSAGE = """"Du bist ein hilfreicher Assistent für ein Statistikamt. Du wirst gebeten, Metadaten für einen Datensatz zu analysieren. Bleibe stets wahrheitsgemäß und objektiv. Schreib nur das, was du anhand der vom Benutzer bereitgestellten Metadaten sicher feststellen kannst. Mache keine Annahmen. Schreibe einfach und klar. Schreibe immer in deutscher Sprache."""
@@ -122,7 +155,7 @@ Beschreibung: {description}
 
 def do_full_analysis(data):
     """Check the titles and descriptions of each dataset individually."""
-    return call_openai(
+    return call_openrouter(
         PROMPT_ANALYSIS.format(title=data.title, description=data.description)
     )
 
@@ -137,40 +170,20 @@ def parse_analysis_results(results):
         pd.DataFrame: A DataFrame with the scores and the qualitative analysis.
 
     """
-    content = re.findall(r"<dateninhalt>(.*?)</dateninhalt>", results, re.DOTALL)[
-        0
-    ].strip()
-    content_score = re.findall(
-        r"<dateninhalt-score>(.*?)</dateninhalt-score>", results, re.DOTALL
-    )[0].strip()
-    context = re.findall(
-        r"<methodik>(.*?)</methodik>",
-        results,
-        re.DOTALL,
-    )[0].strip()
-    context_score = re.findall(
-        r"<methodik-score>(.*?)</methodik-score>",
-        results,
-        re.DOTALL,
-    )[0].strip()
-    quality = re.findall(r"<datenqualität>(.*?)</datenqualität>", results, re.DOTALL)[
-        0
-    ].strip()
-    quality_score = re.findall(
-        r"<datenqualität-score>(.*?)</datenqualität-score>",
-        results,
-        re.DOTALL,
-    )[0].strip()
-    spacial = re.findall(
-        r"<geographie>(.*?)</geographie>",
-        results,
-        re.DOTALL,
-    )[0].strip()
-    spacial_score = re.findall(
-        r"<geographie-score>(.*?)</geographie-score>",
-        results,
-        re.DOTALL,
-    )[0].strip()
+    def extract_tag(pattern, text, default=""):
+        """Extract content from XML tags with fallback to default."""
+        matches = re.findall(pattern, text, re.DOTALL)
+        return matches[0].strip() if matches else default
+    
+    content = extract_tag(r"<dateninhalt>(.*?)</dateninhalt>", results)
+    content_score = extract_tag(r"<dateninhalt-score>(.*?)</dateninhalt-score>", results)
+    context = extract_tag(r"<methodik>(.*?)</methodik>", results)
+    context_score = extract_tag(r"<methodik-score>(.*?)</methodik-score>", results)
+    quality = extract_tag(r"<datenqualität>(.*?)</datenqualität>", results)
+    quality_score = extract_tag(r"<datenqualität-score>(.*?)</datenqualität-score>", results)
+    spatial = extract_tag(r"<geographie>(.*?)</geographie>", results)
+    spatial_score = extract_tag(r"<geographie-score>(.*?)</geographie-score>", results)
+    
     tmp = pd.DataFrame(
         (
             content,
@@ -179,8 +192,8 @@ def parse_analysis_results(results):
             context_score,
             quality,
             quality_score,
-            spacial,
-            spacial_score,
+            spatial,
+            spatial_score,
         )
     ).T
     tmp.columns = [
@@ -190,8 +203,8 @@ def parse_analysis_results(results):
         "context_score",
         "quality",
         "quality_score",
-        "spacial",
-        "spacial_score",
+        "spatial",
+        "spatial_score",
     ]
     return tmp
 
