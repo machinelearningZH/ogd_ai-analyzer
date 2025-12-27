@@ -71,7 +71,7 @@ The two notebooks produce the following outputs:
 - another **Excel file with a qualitative assessment of the title and description of each dataset** created by an LLM
 
 > [!Important]
-> At the risk of stating the obvious: By using the code parts for the LLM-based analysis **you send data to a third-party provider** via [OpenRouter](https://openrouter.ai), which routes requests to various LLM providers. **Therefore only use non-sensitive data.** Again, stating the obvious: **LLMs make errors.** They regularly hallucinate, make things up, and get things wrong. They often do so in subtle, non-obvious ways, that may be hard to detect. This app is **meant to be used as an assistive system that makes suggestions.** It **only yields a draft of an analysis, that you always should double-check.**
+> At the risk of stating the obvious: By using the code parts for the LLM-based analysis **you send data to a third-party provider** via [OpenRouter](https://openrouter.ai), which routes requests to various LLM providers. **Therefore only use non-sensitive data.** **LLMs make errors.** They regularly hallucinate, make things up, and get things wrong. They often do so in subtle, non-obvious ways, that may be hard to detect. This app is **meant to be used as an assistive system that makes suggestions.** It **only yields a draft of an analysis, that you should always double-check.**
 
 ## What exactly do we check?
 
@@ -115,10 +115,10 @@ Metadata is essential for data users. Only with an understanding of context, met
 
 Swiss OGD offerings follow the [DCAT-AP CH standard](https://www.dcat-ap.ch/), the «Swiss Application Profile for Data Portals and Catalogues». While DCAT is beneficial and widely adopted, it can be easily «hacked».
 
-- It is simple **to create a dataset entry that conforms to the standard, but lacks meaningful content**. You can do this for example by simply inputting empty strings, lists or dictionaries for mandatory fields, or by just inputting a single nonsensical element like one character or number.
+- It is simple **to create a dataset entry that conforms to the standard, but lacks meaningful content**. You can do this, for example, by simply inputting empty strings, lists or dictionaries for mandatory fields, or by just inputting a single nonsensical element like one character or number.
 - You can also **«misuse» the standard by copying the title into the description field**, adding no additional information.
 
-These are real issues. If you look at OGD catalogues you'll easily find many of these examples and also quite a few datasets that perfectly adhere to the standard but are completely broken.
+These are real issues. If you look at OGD catalogues, you'll easily find many of these examples and also quite a few datasets that perfectly adhere to the standard but are completely broken.
 
 > [!Note]
 > These problems are not the «fault» of DCAT. The standard is a sincere recommendation, but it cannot ensure that every entry is meaningful. This responsibility lies with us as data stewards and publishers.
