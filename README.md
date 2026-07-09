@@ -131,7 +131,7 @@ Our OGD catalog lists ~1,050 datasets and opendata.swiss lists ~14,000 datasets.
 
 ## Project Team
 
-**Laure Stadler**, **Chantal Amrhein**, **Patrick Arnecke** – [Statistisches Amt Zürich: Team Data](https://www.zh.ch/de/direktion-der-justiz-und-des-innern/statistisches-amt/data.html)
+**Laure Stadler**, **Chantal Amrhein**, **Patrick Arnecke** – [Amt für Statistik und Daten: Team Data](https://www.zh.ch/de/direktion-der-justiz-und-des-innern/amt-fuer-statistik-und-daten.html)
 
 Many thanks also go to **Corinna Grobe** and our former colleague **Adrian Rupp**.
 
